@@ -1,0 +1,39 @@
+# Step 1: Create a Security Group
+Resources:
+  LaunchWizard2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: launch-wizard-2
+      GroupDescription: launch-wizard-2 created 2025-01-17T01:45:43.405Z
+      VpcId: vpc-074e38724a76d3161
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 73.167.32.217/32
+
+  # Step 2: Create an EC2 Instance
+  DevopsProjectVM:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-08970251d20e940b0
+      InstanceType: t2.micro
+      KeyName: devops-project-vm-01-key
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          GroupSet:
+            - !Ref LaunchWizard2SecurityGroup
+      CreditSpecification:
+        CPUCredits: standard
+      Tags:
+        - Key: Name
+          Value: devops-project-vm
+      MetadataOptions:
+        HttpEndpoint: enabled
+        HttpPutResponseHopLimit: 2
+        HttpTokens: required
+      PrivateDnsNameOptions:
+        HostnameType: ip-name
+        EnableResourceNameDnsARecord: true
+        EnableResourceNameDnsAAAARecord: false
